@@ -13,7 +13,6 @@
 class Ebizmarts_MailChimp_Model_Observer
 {
 
-    const PRODUCT_IS_DISABLED = 2;
 
     /**
      * @return Mage_Core_Model_Resource
@@ -686,14 +685,8 @@ class Ebizmarts_MailChimp_Model_Observer
             $ecommEnabled = $helper->isEcommerceEnabled($scopeArray['scope_id'], $scopeArray['scope']);
 
             if ($ecommEnabled) {
-                if ($product->getStatus() == self::PRODUCT_IS_DISABLED){
-                    $apiProduct->updateDisabledProducts($product->getId(), $mailchimpStoreId);
-                } else {
-                    $apiProduct->update($product->getId(), $mailchimpStoreId);
-                }
+                $apiProduct->update($product->getId(), $mailchimpStoreId);
             }
-
-
         }
 
         return $observer;

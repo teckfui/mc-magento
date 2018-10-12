@@ -218,12 +218,12 @@ class Ebizmarts_MailChimp_Model_Api_PromoRules
         $data['description'] = ($promoRule->getDescription()) ? $promoRule->getDescription() : $promoRule->getName();
 
         $fromDate = $promoRule->getFromDate();
-        if ($fromDate !== null) {
+        if ($fromDate) {
             $data['starts_at'] = $fromDate;
         }
 
         $toDate = $promoRule->getToDate();
-        if ($toDate !== null) {
+        if ($toDate) {
             $data['ends_at'] = $toDate;
         }
 
@@ -234,11 +234,11 @@ class Ebizmarts_MailChimp_Model_Api_PromoRules
 
         $data['enabled'] = (bool)$promoRule->getIsActive();
 
-        if ($this->ruleIsNotCompatible($data)) {
+        if (!$data['target'] || !$data['type']) {
             $error = 'The rule type is not supported by the MailChimp schema.';
         }
 
-        if (!$error && $this->ruleHasMissingInformation($data)) {
+        if (!$error && (!$data['amount'] || !$data['description'] || !$data['id'])) {
             $error = 'There is required information by the MailChimp schema missing.';
         }
 
@@ -352,39 +352,5 @@ class Ebizmarts_MailChimp_Model_Api_PromoRules
     protected function getCoreResource()
     {
         return Mage::getSingleton('core/resource');
-    }
-
-    /**
-     * @param $data
-     * @return bool
-     */
-    protected function ruleIsNotCompatible($data)
-    {
-        $isNotCompatible = null;
-
-        if ($data['target'] === null || $data['type'] === null) {
-            $isNotCompatible = true;
-        } else {
-            $isNotCompatible = false;
-        }
-
-        return $isNotCompatible;
-    }
-
-    /**
-     * @param $data
-     * @return bool
-     */
-    protected function ruleHasMissingInformation($data)
-    {
-        $hasMissingInformation = null;
-
-        if ($data['amount'] === null || $data['description'] === null || $data['id'] === null) {
-            $hasMissingInformation = true;
-        } else {
-            $hasMissingInformation = false;
-        }
-
-        return $hasMissingInformation;
     }
 }
